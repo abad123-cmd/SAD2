@@ -9,7 +9,7 @@ app.secret_key = "your_secret_key"
 DB_CONFIG = {
     "host": "localhost",
     "user": "root",
-    "password": "password",
+    "password": "",
     "database": "jctrucking_company"
 }
 
