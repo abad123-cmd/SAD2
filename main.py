@@ -1,11 +1,10 @@
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 import mysql.connector
-from mysql.connector import pooling
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
-# Database Connection Pool
+# Database Configuration
 DB_CONFIG = {
     "host": "localhost",
     "user": "root",
@@ -13,19 +12,14 @@ DB_CONFIG = {
     "database": "jctrucking_company"
 }
 
-connection_pool = pooling.MySQLConnectionPool(pool_name="mypool", pool_size=5, **DB_CONFIG)
-
 def get_db_connection():
     try:
-        conn = connection_pool.get_connection()
-        if conn.is_connected():
-            print("Database connected successfully!")
+        conn = mysql.connector.connect(**DB_CONFIG)
         return conn
     except mysql.connector.Error as e:
-        print(f"Database connection failed: {e}")
+        flash(f"Database connection failed: {e}", "danger")
         return None
 
-# Home Route
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -36,7 +30,6 @@ def register():
     try:
         conn = get_db_connection()
         if conn is None:
-            flash("Database connection failed!", "danger")
             return redirect(url_for("home"))
         cursor = conn.cursor()
 
@@ -55,10 +48,6 @@ def register():
             flash("All fields are required!", "danger")
             return redirect(url_for("home"))
 
-        if role == "admin":
-            flash("You cannot register as an admin!", "danger")
-            return redirect(url_for("home"))
-
         # Check if username already exists
         cursor.execute("SELECT username FROM users WHERE username = %s", (username,))
         if cursor.fetchone():
@@ -72,7 +61,7 @@ def register():
         """, (username, full_name, password, email, contact_no, age, address, role))
 
         conn.commit()
-        flash("Account created successfully! You can now log in.", "success")
+        flash(f"Account successfully registered as {role}! You can now log in.", "success")
         return redirect(url_for("home"))
 
     except mysql.connector.Error as e:
@@ -91,7 +80,6 @@ def login():
     try:
         conn = get_db_connection()
         if conn is None:
-            flash("Database connection failed!", "danger")
             return redirect(url_for("home"))
         cursor = conn.cursor()
 
@@ -105,10 +93,8 @@ def login():
             session["username"] = user[0]
             session["role"] = user[2]
 
-            if user[2] == "admin":
-                return redirect(url_for("admin_dashboard"))
-            else:
-                return redirect(url_for("dashboard"))
+            flash("Login successful!", "success")
+            return redirect(url_for("admin_dashboard" if user[2] == "admin" else "dashboard"))
         else:
             flash("Invalid username or password", "danger")
 
@@ -122,7 +108,7 @@ def login():
 
     return redirect(url_for("home"))
 
-# User Dashboard Route (Uses usersdashboard.html)
+# User Dashboard Route
 @app.route("/dashboard")
 def dashboard():
     if "username" in session and session.get("role") == "user":
