@@ -14,6 +14,16 @@
     <!-- Content block for child templates -->
     {% block body %}
     {% endblock %}
+    <!-- Your HTML content here -->
+    <script>
+        document.querySelectorAll('.truck-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const truck = button.getAttribute('data-truck');
+                const img = document.getElementById('truck-image');
+                img.src = `static/${truck}.png`;
+            });
+        });
+    </script>
 
 </body>
 </html>
