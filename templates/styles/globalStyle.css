@@ -30,6 +30,12 @@
     .carouselImg {
         height: 88vh;
     }
+
+    .chartLogo {
+        height: 60px;
+        width: 60px;
+        float: right;
+    }
 }
 
 /* TABLET VIEW */
@@ -57,6 +63,13 @@
     
     .carouselImg {
         height: 70vw;
+    }
+
+    
+    .chartLogo {
+        height: 50px;
+        width: 50px;
+        float: right;
     }
 }
 
@@ -86,6 +99,13 @@
     .carouselImg {
         height: 50vh;
     }
+
+    
+    .chartLogo {
+        height: 50px;
+        width: 50px;
+        float: right;
+    }
 }
 
 nav {
@@ -95,6 +115,14 @@ nav {
 body {
     background-color: #000000;
     color: #ffffff;
+}
+
+th {
+    color: #acacac !important;
+}
+
+td {
+    font-size: 14px;
 }
 
 .dropdown-menu.show {
@@ -128,4 +156,14 @@ body {
 
 .form-label {
     color: gray;
+}
+
+.card-body {
+    color: #ffffff;
+}
+
+.card-text {
+    letter-spacing: 1px;
+    font-size: 13px;
+    text-transform: uppercase;
 }
